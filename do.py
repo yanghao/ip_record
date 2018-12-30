@@ -6,7 +6,7 @@ hostname = socket.gethostname()
 
 delta = 30
 
-last = time.time()
+last = 0
 while True:
     now = time.time()
     if (now - last) > delta:
