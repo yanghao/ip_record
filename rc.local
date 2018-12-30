@@ -17,6 +17,6 @@ if [ "$_IP" ]; then
   printf "My IP address is %s\n" "$_IP"
 fi
 
-python3 /var/bitfun/ip_record/do.py 2>&1 > /var/bitfun/ip_record/do.py &
+python3 /var/bitfun/ip_record/do.py 2>&1 > /var/bitfun/ip_record/log.txt &
 
 exit 0
