@@ -1,2 +1,2 @@
 #!/bin/sh
-python3 do.py 2>&1 > log.txt
+python3 do.py

@@ -1,7 +1,12 @@
 import time
 import socket
+import logging
 from urllib.request import urlopen
 
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger("main")
+fh = logging.FileHandler("log.txt")
+log.addHandler(fh)
 server = ["192.168.0.10", 8080]
 hostname = socket.gethostname()
 
@@ -12,13 +17,13 @@ while True:
     now = time.time()
     if (now - last) > delta:
         try:
-            print("now ...")
+            log.info("now ...")
             server_and_name = server + [hostname]
-            print(server_and_name)
+            log.info(server_and_name)
             content = urlopen("http://%s:%d/%s" % tuple(server_and_name)).read()
-            print(b"content: %s" % content)
+            log.info(b"content: %s" % content)
         except:
-            print("access to %s:%d failed" % server)
+            log.info("access to %s:%d failed" % server)
         last = now
     else:
         time.sleep(5)
