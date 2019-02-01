@@ -4,7 +4,7 @@ import bjoern
 
 from time import gmtime, strftime
 
-DATA_PATH = "/home/pi/git/test/static"
+DATA_PATH = "static"
 
 def app(env, start_response):
     start_response('200 OK', [])
@@ -20,21 +20,25 @@ def app(env, start_response):
         if not os.path.isdir(parent):
             os.system("mkdir -p %s" % path)
         path = os.path.join(path, fn)
-        #print("got: %s" % path)
+        print("got: %s" % path)
         with open(path, "wb") as fd:
                 ts = strftime("%Y-%m-%d %H:%M:%S +0000", gmtime())
                 ts = ts.encode('utf-8')
                 fd.write(b"%s @ %s\n" % (ip, ts))
         return b"OK"
     else:
-        r = b''
+        r = []
         for root, dirs, files in os.walk(DATA_PATH):
             for f in files:
-                r += b"%s: " % f.encode('utf-8')
+                tmp = b"%s/%s: " % (root.encode('utf-8'), f.encode('utf-8'))
                 with open(os.path.join(root, f), "rb") as fd:
-                    r += fd.read()
+                    tmp += fd.read()
+                r.append(tmp)
+        r.sort()
         #print("put: %s" % r.decode('utf-8'))
-        return r
+        return b''.join(r)
 
 if __name__ == '__main__':
+    if not os.path.isdir(DATA_PATH):
+        os.system("mkdir -p %s" % DATA_PATH)
     bjoern.run(app, '0.0.0.0', 8080)
