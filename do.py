@@ -11,11 +11,14 @@ def get_ip_list():
     output = check_output("ifconfig")
     output = output.decode()
     p = re.compile('inet ([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)')
-    m = p.search(output)
-    if m:
-        return m.groups()
-    else:
-        return []
+    ip_list = []
+    for line in output.split('\n'):
+        m = p.search(line)
+        if m:
+            ip = m.groups()[0]
+            if not ip.startswith("127"):
+                ip_list.append(ip)
+    return ip_list
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger("main")
@@ -32,8 +35,8 @@ while True:
     now = time.time()
     if (now - last) > delta:
         try:
-            log.info("now ...")
             ip_list = get_ip_list()
+            log.info("ip list: %s" % str(ip_list))
             for ip in ip_list:
                 server_and_name = server + [hostname+"/"+ip]
                 log.info(server_and_name)
